@@ -1,0 +1,17 @@
+<!doctype html>
+<head>
+  {% block head %}
+    <title>{% block title %}Dietzilla{% endblock %}</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+    <script class="include" src="{{ url_for('static', filename='js/lib/jquery.min.js') }}"></script>
+  {% endblock %}
+</head>
+<body>
+  {% block navbar %} {% endblock%}
+  {% block content %}
+    <h1>Dietzilla</h1>
+    <p>Dieting advise and tools for the lazy.</p>
+  {% endblock %}
+  {% block footer%}{% endblock %}
+</body>
