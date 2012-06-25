@@ -14,115 +14,70 @@
   <script>
     $(document).ready(function(){
 	$.jqplot.config.enablePlugins = true;
-	var weight = [['06/15/2012', 191.7],
-                      ['06/16/2012', 190.0],
-                      ['06/17/2012', 189.4],
-                      ['06/18/2012', 190.8],
-                      ['06/19/2012', 189.3],
-                      ['06/20/2012', 190.7],
-                      ['06/21/2012', 188.2],
-                      ['06/22/2012', 188.7],
-                      ['06/23/2012', 187.2],
-                      ['06/24/2012', 188.3]
-                     ];
-	var waist = [['06/15/2012', 38.5],
-                     ['06/16/2012', 38.7],
-                     ['06/17/2012', 38.6],
-                     ['06/18/2012', 38.8],
-                     ['06/19/2012', 38.1],
-
-                     ['06/21/2012', 37.9],
-                     ['06/22/2012', 38.9],
-                     ['06/23/2012', 38.5],
-                     ['06/24/2012', 38.5]
-                    ];
-
-	var targetPlot = $.jqplot("target", [weight, waist], {
-            title:'Weight and Waist Plot',
-            animate: true,
+	var series = {{ graphs|safe }};
+	var ticks = 10;
+	// Invarients
+	var xaxis = {renderer:$.jqplot.DateAxisRenderer,
+                     pad: 0,
+                     labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+                     tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+                     numberTicks: ticks, //Number of days this plot covers
+                     tickOptions: {angle:-30}
+                    };
+        var axesDefaults = {useSeriesColor: true,
+                            rendererOptions: {alignTicks: true}
+                           };
+	var options = {
+            axesDefaults: axesDefaults,
+            axes:{xaxis: xaxis
+                 },
+            series: [],
             seriesDefault: {showMarker: true},
-            series: [{label: 'Weight', yaxis:'yaxis', renderer:$.jqplot.MovingAverageRenderer, rendererOptions:{smooth: true, showMarker:true}},
-                     {label: 'Waist', yaxis:'y2axis', renderer:$.jqplot.MovingAverageRenderer, rendererOptions:{smooth: true, showMarker:true}}],
-            axes:{
-		yaxis:{
-                    label: 'Weight',
-                    tickRenderer: $.jqplot.CanvasAxisTickRenderer,
-                    labelRenderer: $.jqplot.CanvasAxisLabelRenderer
-		},
-		y2axis:{
-                    label: 'Waist',
-                    tickRenderer: $.jqplot.CanvasAxisTickRenderer,
-                    labelRenderer: $.jqplot.CanvasAxisLabelRenderer
-		},
-		xaxis:{
-                    renderer:$.jqplot.DateAxisRenderer,
-                    pad: 0,
-                    labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
-                    tickRenderer: $.jqplot.CanvasAxisTickRenderer,
-                    numberTicks:10,
-                    tickOptions: {angle:-30}
-		}
-            },
-            axesDefaults:{
-		// color the axes baselines the same color as the series.
-		useSeriesColor: true,
-		rendererOptions: {
-                    // align ticks for each axis across the grid
-                    alignTicks: true
-		}
-            },
-            highlighter: {
-		sizeAdjust: 10,
-		tooltipLocation: 'n',
-		tooltipAxes: 'y',
-		tooltipFormatString: '<b><i><span style="color:red;">Weight:</span></i></b> %.2f',
-		useAxesFormatters: true},
+            title:'Weight and Waist Plot',
             legend:{show: true},
+            animate: true,
             cursor: {show: true,
                      zoom: true}
-	});
-	var controllerPlot = $.jqplot("controller", [weight, waist], {
-            animate: false,
+	};
+	var macroOptions = {
+            axesDefaults: axesDefaults,
+            axes:{xaxis:xaxis,
+                 },
+            series: [],
             seriesDefaults: {showMarker: false},
-            series: [{label: 'Weight', yaxis:'yaxis'},
-                     {label: 'Waist', yaxis:'y2axis'}],
-            axes:{
-		yaxis:{
-                    label: 'Weight',
-                    tickRenderer: $.jqplot.CanvasAxisTickRenderer,
-                    labelRenderer: $.jqplot.CanvasAxisLabelRenderer
-		},
-		y2axis:{
-                    label: 'Waist',
-                    tickRenderer: $.jqplot.CanvasAxisTickRenderer,
-                    labelRenderer: $.jqplot.CanvasAxisLabelRenderer
-		},
-		xaxis:{
-                    renderer:$.jqplot.DateAxisRenderer,
-                    pad: 0,
-                    labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
-                    tickRenderer: $.jqplot.CanvasAxisTickRenderer,
-                    numberTicks:10,
-                    tickOptions: {angle:-30}
-		}
-            },
-            axesDefaults:{
-		// color the axes baselines the same color as the series.
-		useSeriesColor: true,
-		rendererOptions: {
-                    // align ticks for each axis across the grid
-                    alignTicks: true
-		}
-            },
+            animate: false,
             cursor: {show: true,
                      showTooltip: false,
                      constrainZoomTo: 'x',
                      zoom: true}
-	});
+	};
+	var style = $.jqplot.MovingAverageRenderer;
+
+	// For each series we need a series_style and yaxis
+	var data = [];
+	for (var i=0; i<series.length; i++) {
+            var title = series[i]['title'];
+            var axis = 'y'+ ((i>0)?i+1:'') +'axis';
+            options['series'].push({label: title, yaxis:axis,
+                                    renderer:style,
+                                    rendererOptions:{showMarker:true}});
+            macroOptions['series'].push({label: title, yaxis:axis});
+
+            options['axes'][axis] = {label: title + ' (' + series[i]['units'] + ')',
+                                     tickOptions: {formatString:'%.1f'},
+                                     tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+                                     labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+                                     rendererOptions:{}
+                                    };
+            macroOptions['axes'][axis] = options['axes'][axis];
+            data.push(series[i]['data']);
+	}
+	var targetPlot = $.jqplot("target", data, options);
+	var controllerPlot = $.jqplot("controller", data, macroOptions);
 
 	$.jqplot.Cursor.zoomProxy(targetPlot, controllerPlot);
 
-	$('.button-reset').click(function() { plot1.resetZoom() });
+	$('.button-reset').click(function() { contollerPlot.resetZoom() });
     });
   </script>
 {% endblock %}
