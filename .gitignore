@@ -1,1 +1,3 @@
 *.pyc
+Dietzilla.egg-info/*
+self_quant/config.*

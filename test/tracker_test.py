@@ -1,4 +1,4 @@
-from nose import with_setup
+from nose import with_setup, runmodule
 from nose.tools import eq_
 from bs4 import BeautifulSoup as BS
 from self_quant import tracker
@@ -34,6 +34,7 @@ def test_templates():
     for template in templates:
         yield check_template, template
 
+
 def check_template(name):
     rv = app.get('/template/%s' % name)
     HV = HTMLValidator()
@@ -48,4 +49,4 @@ def check_template(name):
 
 
 if __name__ == '__main__':
-    nose.runmodule()
+    runmodule()

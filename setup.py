@@ -7,5 +7,9 @@ setup(
     packages=['self_quant'],
     include_package_data=True,
     zip_safe=False,
-    install_requires=['Flask', 'nose', 'flask-sqlalchemy']
+    install_requires=['Flask',
+                      'nose',
+                      'flask-sqlalchemy',
+                      'sqlalchemy-migrate']
+
 )

@@ -1,87 +1,81 @@
 {% extends "layout.html" %}
-{% block title %}Dietzilla:graph{% endblock %}
+{% block title %}Graph{% endblock %}
 {% block head %}
-  {{ super() }}
-  <link rel="stylesheet" href="{{ url_for('static', filename='js/lib/jquery.jqplot.min.css') }}" />
-  <script class="include" src="{{ url_for('static', filename='js/lib/jquery.jqplot.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/lib/plugins/jqplot.dateAxisRenderer.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/lib/plugins/jqplot.canvasTextRenderer.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/lib/plugins/jqplot.canvasAxisLabelRenderer.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/lib/plugins/jqplot.canvasAxisTickRenderer.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/lib/plugins/jqplot.cursor.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/lib/plugins/jqplot.highlighter.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/lib/plugins/jqplot.movingAverageRenderer.js') }}"></script>
-  <script>
+{{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='js/lib/jqplot/jquery.jqplot.css') }}" />
+
+    <script class="include" src="{{ url_for('static', filename='js/lib/jqplot/jquery.jqplot.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/lib/jqplot/plugins/jqplot.dateAxisRenderer.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/lib/jqplot/plugins/jqplot.canvasTextRenderer.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/lib/jqplot/plugins/jqplot.canvasAxisLabelRenderer.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/lib/jqplot/plugins/jqplot.canvasAxisTickRenderer.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/lib/jqplot/plugins/jqplot.cursor.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/lib/jqplot/plugins/jqplot.highlighter.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/lib/jqplot/plugins/jqplot.movingAverageRenderer.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/graph.js') }}"></script>
+    <script>
+    var targetPlot, controllerPlot;
+
+    $(function() {
+        $("#from").datepicker({
+            minDate: "new Date({{ min_date.year }}, {{ min_date.month }}, {{ min_date.day }})",
+            changeMonth: true,
+            changeYear: true,
+            numberOfMonths: 1,
+            onSelect: function(selectedDate) {
+                $("#to").datepicker("option", "minDate", selectedDate);
+		controllerPlot.resetZoom();
+                jqplot_zoomDates($("#from").datepicker("getDate"), $("#to").datepicker("getDate"), targetPlot);
+            }
+        });
+        $("#to").datepicker({
+            maxDate: "0d",
+            changeMonth: true,
+            changeYear: true,
+            numberOfMonths: 1,
+            onSelect: function(selectedDate) {
+                $("#from").datepicker("option", "maxDate", selectedDate);
+		controllerPlot.resetZoom();
+                jqplot_zoomDates($("#from").datepicker("getDate"),
+                                 $("#to").datepicker("getDate"), targetPlot);
+            }
+        });
+    });
     $(document).ready(function(){
-	$.jqplot.config.enablePlugins = true;
 	var series = {{ graphs|safe }};
-	var ticks = 10;
-	// Invarients
-	var xaxis = {renderer:$.jqplot.DateAxisRenderer,
-                     pad: 0,
-                     labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
-                     tickRenderer: $.jqplot.CanvasAxisTickRenderer,
-                     numberTicks: ticks, //Number of days this plot covers
-                     tickOptions: {angle:-30}
-                    };
-        var axesDefaults = {useSeriesColor: true,
-                            rendererOptions: {alignTicks: true}
-                           };
-	var options = {
-            axesDefaults: axesDefaults,
-            axes:{xaxis: xaxis
-                 },
-            series: [],
-            seriesDefault: {showMarker: true},
-            title:'Weight and Waist Plot',
-            legend:{show: true},
-            animate: true,
-            cursor: {show: true,
-                     zoom: true}
-	};
-	var macroOptions = {
-            axesDefaults: axesDefaults,
-            axes:{xaxis:xaxis,
-                 },
-            series: [],
-            seriesDefaults: {showMarker: false},
-            animate: false,
-            cursor: {show: true,
-                     showTooltip: false,
-                     constrainZoomTo: 'x',
-                     zoom: true}
-	};
-	var style = $.jqplot.MovingAverageRenderer;
+	$("#from").datepicker("setDate", "{{ initial_days }}");
+	$("#to").datepicker("setDate", "0d");
+	var plots = show_graph(series, "Weight and Waist");
+	targetPlot = plots[0];
+	controllerPlot = plots[1];
+        jqplot_zoomDates($("#from").datepicker("getDate"),
+                         $("#to").datepicker("getDate"), targetPlot);
 
-	// For each series we need a series_style and yaxis
-	var data = [];
-	for (var i=0; i<series.length; i++) {
-            var title = series[i]['title'];
-            var axis = 'y'+ ((i>0)?i+1:'') +'axis';
-            options['series'].push({label: title, yaxis:axis,
-                                    renderer:style,
-                                    rendererOptions:{showMarker:true}});
-            macroOptions['series'].push({label: title, yaxis:axis});
-
-            options['axes'][axis] = {label: title + ' (' + series[i]['units'] + ')',
-                                     tickOptions: {formatString:'%.1f'},
-                                     tickRenderer: $.jqplot.CanvasAxisTickRenderer,
-                                     labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
-                                     rendererOptions:{}
-                                    };
-            macroOptions['axes'][axis] = options['axes'][axis];
-            data.push(series[i]['data']);
-	}
-	var targetPlot = $.jqplot("target", data, options);
-	var controllerPlot = $.jqplot("controller", data, macroOptions);
-
-	$.jqplot.Cursor.zoomProxy(targetPlot, controllerPlot);
-
-	$('.button-reset').click(function() { contollerPlot.resetZoom() });
+	$('.button-reset').click(function() {controllerPlot.resetZoom();
+                                            });
+	$('.button-cust').click(function() {controllerPlot.resetZoom();
+                                            jqplot_zoomDates(new Date(2012,4,3),
+                                                             new Date(2012,5,26), targetPlot);
+                                           });
+	$('.button-default').click(function() {controllerPlot.resetZoom();
+                                               jqplot_zoomDates($("#from").datepicker("getDate"),
+								$("#to").datepicker("getDate"), targetPlot);
+                                              });
     });
   </script>
 {% endblock %}
 {% block content %}
-    <div class="jqPlot" id="target" style="height:320px; width:600px;"></div>
-    <div class="jqPlot" id="controller" style="margin-top: 30px; height:200px; width:600px;"></div>
+  <div class="jqPlot" id="target" style="height:320px; width:600px;"></div>
+  <div class="jqPlot" id="controller" style="margin-top: 30px; height:150px; width:600px;"></div>
+  <div id="zoomOptions">
+    <button class="button-default">Show last {{ -initial_days }} days</button>
+    <button class="button-cust">Show last ? days</button>
+    <button class="button-reset">Show all dates</button>
+    </div>
+  <div id="dates">
+    <label for="from">Start Date:</label><input id="from" name="from"type="text" />
+    <label for="to"> to </label><input id="to" name="to" type="text" />
+  </div>
+  <div id="entries">
+  </div>
 {% endblock %}

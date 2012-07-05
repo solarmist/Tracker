@@ -1,10 +1,13 @@
 <!doctype html>
 <head>
   {% block head %}
-    <title>{% block title %}Dietzilla{% endblock %}</title>
+    <title>{% block title %}Dietzilla{% endblock %}| Dietzilla</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
-    <script class="include" src="{{ url_for('static', filename='js/lib/jquery.min.js') }}"></script>
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/flick/jquery-ui.css"/>
+
+    <script class="include" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script class="include" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
   {% endblock %}
 </head>
 <body>
