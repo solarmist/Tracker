@@ -2,7 +2,7 @@
 .jqplot-target {
     position: relative;
     color: #666666;
-    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica;
     font-size: 1em;
 /*    height: 300px;
     width: 400px;*/
@@ -188,6 +188,7 @@ div.jqplot-table-legend-swatch {
 .jqplot-title {
     top: 0px;
     left: 0px;
+    font-family: Georgia, serif;
     padding-bottom: 0.5em;
     font-size: 1.2em;
 }
@@ -218,7 +219,7 @@ table.jqplot-cursor-tooltip {
     font-size: 0.75em;
     z-index: 2;
 }
-      
+
 td.jqplot-cursor-legend-swatch {
     vertical-align: middle;
     text-align: center;

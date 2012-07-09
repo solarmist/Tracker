@@ -1,7 +1,6 @@
 from pytz import utc
 from sqlalchemy import Column, ForeignKey
 from sqlalchemy import Integer, Unicode, DateTime, Float
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 from self_quant.tracker import db
 
@@ -54,7 +53,7 @@ class Measurement(db.Model):
     def __init__(self, user, m_type, datetime, measurement):
         self.user_id = user.id if isinstance(user, User) else user
         self.m_type = m_type.id if isinstance(m_type,
-                                            MeasurementType) else m_type
+                                              MeasurementType) else m_type
         self.m_date = datetime.astimezone(utc)
         self.measurement = measurement
 

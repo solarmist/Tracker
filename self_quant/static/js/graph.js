@@ -7,7 +7,7 @@ function show_graph(series, title) {
                  labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
                  tickRenderer: $.jqplot.CanvasAxisTickRenderer,
                  numTicks: 15,
-                 tickOptions: {angle:-30, formatString:'%v',
+                 tickOptions: {angle:-30, formatString:'%v'
 			      }
                 };
     var axesDefaults = {useSeriesColor: true,
@@ -19,8 +19,8 @@ function show_graph(series, title) {
              },
         series: [],
         seriesDefault: {showMarker: true},
-        title:title,
-        legend:{show: true},
+        title: {text:title, fontFamily: "Georgia"},
+        legend:{show: true, fontFamily: "HelveticaNeue-Light"},
         animate: true,
         cursor: {show: true,
                  zoom: true}
@@ -44,17 +44,22 @@ function show_graph(series, title) {
     for (var i=0; i<series.length; i++) {
         var title = series[i]['title'];
         var axis = 'y'+ ((i>0)?i+1:'') +'axis';
-        options['series'].push({label: title, yaxis:axis,
+        options['series'].push({label: title,
+				yaxis:axis,
+				// color:colors[i],
                                 renderer:style,
-                                rendererOptions:{showMarker:true}});
-        macroOptions['series'].push({label: title, yaxis:axis});
+                                rendererOptions:{showMarker:true,
+						}});
+        macroOptions['series'].push({label: title,	
+				     // color:colors[i],
+				     yaxis:axis});
 
         options['axes'][axis] = {label: title + ' (' + series[i]['units'] + ')',
-			autoscale: true,
-			tickOptions: {formatString:'%.1f'},
-			tickRenderer: $.jqplot.CanvasAxisTickRenderer,
-			labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
-			rendererOptions:{}
+				 autoscale: true,
+				 tickOptions: {formatString:'%.1f'},
+				 tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+				 labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+				 rendererOptions:{}
                                 };
         macroOptions['axes'][axis] = options['axes'][axis];
         data.push(series[i]['data']);

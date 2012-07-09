@@ -14,68 +14,233 @@
     <script src="{{ url_for('static', filename='js/lib/jqplot/plugins/jqplot.movingAverageRenderer.js') }}"></script>
     <script src="{{ url_for('static', filename='js/graph.js') }}"></script>
     <script>
-    var targetPlot, controllerPlot;
+var targetPlot, controllerPlot, series = {{ graphs|safe }};
 
-    $(function() {
-        $("#from").datepicker({
-            minDate: new Date({{min_date.year}}, {{min_date.month}} - 1, {{min_date.day}}),
-            changeMonth: true,
-            changeYear: true,
-            numberOfMonths: 1,
-            onSelect: function(selectedDate) {
-                $("#to").datepicker("option", "minDate", selectedDate);
-		controllerPlot.resetZoom();
-                jqplot_zoomDates($("#from").datepicker("getDate"), $("#to").datepicker("getDate"), targetPlot);
-            }
-        });
-        $("#to").datepicker({
-            maxDate: "0d",
-            changeMonth: true,
-            changeYear: true,
-            numberOfMonths: 1,
-            onSelect: function(selectedDate) {
-                $("#from").datepicker("option", "maxDate", selectedDate);
-		controllerPlot.resetZoom();
-                jqplot_zoomDates($("#from").datepicker("getDate"),
-                                 $("#to").datepicker("getDate"), targetPlot);
-            }
-        });
-    });
-    $(document).ready(function(){
-	var series = {{ graphs|safe }};
-	$("#from").datepicker("setDate", "{{ initial_days }}");
-	$("#to").datepicker("setDate", "0d");
-	var plots = show_graph(series, "Weight and Waist");
-	targetPlot = plots[0];
-	controllerPlot = plots[1];
-        jqplot_zoomDates($("#from").datepicker("getDate"),
-                         $("#to").datepicker("getDate"), targetPlot);
+$(function() {
+    $("#from").datepicker({
+        minDate: new Date({{min_date.year}}, {{min_date.month}} - 1, {{min_date.day}}),
+        changeMonth: true,
+        changeYear: true,
+        numberOfMonths: 1,
+        onSelect: function(selectedDate) {
+            $("#to").datepicker("option", "minDate", selectedDate);
+            controllerPlot.resetZoom();
+            jqplot_zoomDates($("#from").datepicker("getDate"), $("#to").datepicker("getDate"), targetPlot);
+            inputs($("#from").datepicker("getDate"),
+                   $("#to").datepicker("getDate"),
+                   series);
 
-	$('.button-reset').click(function() {controllerPlot.resetZoom();
-                                            });
-	$('.button-cust').click(function() {controllerPlot.resetZoom();
-                                            jqplot_zoomDates(new Date(2012, 5 - 1, 3),
-                                                             new Date(2012, 6 - 1, 26), targetPlot);
-                                           });
-	$('.button-default').click(function() {controllerPlot.resetZoom();
-                                               jqplot_zoomDates($("#from").datepicker("getDate"),
-								$("#to").datepicker("getDate"), targetPlot);
-                                              });
+        }
     });
+    $("#to").datepicker({
+        maxDate: "0d",
+        changeMonth: true,
+        changeYear: true,
+        numberOfMonths: 1,
+        onSelect: function(selectedDate) {
+            $("#from").datepicker("option", "maxDate", selectedDate);
+            controllerPlot.resetZoom();
+            jqplot_zoomDates($("#from").datepicker("getDate"),
+                             $("#to").datepicker("getDate"), targetPlot);
+            inputs($("#from").datepicker("getDate"),
+                   $("#to").datepicker("getDate"),
+                   series);
+
+        }
+    });
+});
+
+$(document).ready(function(){
+    $("#from").datepicker("setDate", "{{ initial_days }}");
+    $("#to").datepicker("setDate", "0d");
+    var plots = show_graph(series, "Weight and Waist");
+    targetPlot = plots[0];
+    controllerPlot = plots[1];
+    jqplot_zoomDates($("#from").datepicker("getDate"),
+                     $("#to").datepicker("getDate"), targetPlot);
+
+    inputs($("#from").datepicker("getDate"),
+           $("#to").datepicker("getDate"),
+          series);
+
+    $('.button-reset').click(function() {controllerPlot.resetZoom();
+                                        });
+    $('.button-cust').click(function() {controllerPlot.resetZoom();
+                                        jqplot_zoomDates(new Date(2012, 5 - 1, 3),
+                                                         new Date(2012, 6 - 1, 26), targetPlot);
+                                       });
+    $('.button-default').click(function() {controllerPlot.resetZoom();
+                                           jqplot_zoomDates($("#from").datepicker("getDate"),
+                                                            $("#to").datepicker("getDate"), targetPlot);
+                                          });
+});
+
+function makeRow(text, hash) {
+    var div = document.createElement('div'),
+        wrapper = document.createElement('div'),
+        hidden = document.createElement('input'),
+        label = document.createElement('label');
+
+    wrapper.className = 'line center';
+    label.textContent = text + ': ';
+    label.htmlFor = 'date';
+    hidden.type = 'hidden';
+
+    div.appendChild(label);
+    div.appendChild(hidden);
+    wrapper.appendChild(div);
+
+    // Insert a hidden for date
+    // Create an expandable area for multiple values on the same date
+    for (var i = 0; i < hash['titles'].length; i++) {
+	var input = document.createElement('input');
+	input.size = 6;
+	input.type = 'text';
+	if (text in hash) {
+            hidden.value = hash[text][i][0][0];
+            if (hash[text].length <= i) {
+		input.value = '';
+            } else {
+		// If we have multiple values
+		if (hash[text][i].length > 1){
+                    //Make a nested object
+                    // hash[graph][date][entries for the date][0 is date 1 is value]
+                    input.value = hash[text][i][0][1];
+                    hidden.value = hash[text][i][0][0];
+
+                    // Create the drop down for multiple values on one day
+                    var triangle = document.createElement('div');
+                    triangle.className = 'triangle-right';
+                    div.insertBefore(triangle, div.children[0]);
+                    for (var j=0; j < hash[text][i].length; j++ ) {
+			var div2 = document.createElement('div'),
+                            wrapper2 = document.createElement('div'),
+                            br = document.createElement('br'),
+                            label2 = document.createElement('label'),
+                            hidden2 = document.createElement('input'),
+                            input2 = document.createElement('input'),
+                            subtext = hash[text][i][j];
+
+			wrapper2.className = 'subline center';
+			wrapper2.id = text;
+			input2.type = 'text';
+			input2.value = subtext[1];
+			label2.textContent = hash['titles'][i] + ' @ ' + subtext[0].toLocaleTimeString() + ': ';
+			label2.htmlFor = 'date';
+			hidden2.type = 'hidden';
+			hidden2.value = subtext[0];
+			div2.appendChild(label2);
+			div2.appendChild(hidden2);
+			div2.appendChild(input2);
+			wrapper2.appendChild(div2);
+			wrapper.appendChild(br);
+			wrapper.appendChild(wrapper2);
+			$(br).hide();
+			$(wrapper2).hide();
+                    }
+                    triangle.onclick = function(){
+			var sublines = $(wrapper).children();
+			console.log(sublines);
+			for (var j = 2; j < sublines.length; j++) {
+                            $(sublines[j]).slideToggle();
+			}
+			right = $(wrapper).find('.triangle-right');
+			down = $(wrapper).find('.triangle-down');
+			if (right.length > 0) {
+                            for (var j = 0; j <= right.length; j++) {
+				right[0].className = 'triangle-down';
+                            }
+			} else {
+                            for (var j = 0; j <= down.length; j++) {
+				down[0].className = 'triangle-right';
+                            }
+			}
+                    };
+		} else {
+                    input.value = hash[text][i][0][1];
+		}
+            }
+	}
+	div.appendChild(input);
+    }
+return wrapper;
+}
+
+function series_to_hash(series) {
+    var hash = {'titles': []};
+    for (var i = 0; i < series.length; i++) {
+	hash['titles'].push(series[i]['title']);
+	for (var j = 0; j < series[i]['data'].length; j++) {
+            key = new Date(series[i]['data'][j][0]).toDateString();
+            date = new Date(series[i]['data'][j][0]);
+            value = series[i]['data'][j][1];
+            //Build a nest for multiple values on the same day.
+            if (!(key in hash)) {
+		hash[key] = [];
+		// Keep columns aligned
+		for (var k = 0; k < i; k++){
+                    hash[key].push('');
+		}
+            }
+            if (hash[key].length < i - 1) {
+		// Keep columns aligned
+		for (var k = 0; k < i; k++){
+                    hash[key].push('');
+		}
+            }else if (hash[key][i]) {
+		// We already have a value for this date and series, so nest
+		hash[key][i].push([date, value])
+            }else {
+		hash[key].push([[date, value]]);
+            }
+	}
+    }
+    console.log(hash);
+    return hash;
+}
+
+
+function inputs(start, end, series){
+    var container = $('#entries');
+    container.empty();
+    var hash = series_to_hash(series);
+
+    var div = document.createElement('div');
+    for (var i = 0; i < hash['titles'].length; i++){
+	var p = document.createElement('p');
+	p.textContent = hash['titles'][i];
+	div.appendChild(p);
+	div.className = "line center";
+    }
+    $(div).appendTo(container);
+
+    for (var i = start; i <= end; i.setDate(i.getDate() + 1)) {
+	//Next row
+	$(makeRow(i.toDateString(), hash)).appendTo(container);
+    }
+    $('.line:odd').addClass('odd');
+};
+
   </script>
 {% endblock %}
 {% block content %}
-  <div class="jqPlot" id="target" style="height:320px; width:600px;"></div>
-  <div class="jqPlot" id="controller" style="margin-top: 30px; height:150px; width:600px;"></div>
+  <br/>
+  <div class="jqPlot graph" id="target"></div>
+  <div class="jqPlot graph" id="controller"></div>
+  <br/>
   <div id="zoomOptions">
     <button class="button-default">Show last {{ -initial_days }} days</button>
     <button class="button-cust">Show last ? days</button>
     <button class="button-reset">Show all dates</button>
-    </div>
-  <div id="dates">
-    <label for="from">Start Date: </label><input id="from" name="from"type="text" />
-    <label for="to"> to </label><input id="to" name="to" type="text" />
   </div>
+  <br/>
+  <div class="center" id="dates">
+    <div>
+      <label for="from">Start Date: </label><input id="from" type="text"/>
+      <label for="to"> to </label><input id="to" type="text"/>
+    </div>
+  </div>
+  <br/>
   <div id="entries">
   </div>
 {% endblock %}

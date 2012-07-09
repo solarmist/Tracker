@@ -1,4 +1,3 @@
-from datetime import datetime
 from sqlalchemy import Column, ForeignKey
 from sqlalchemy import Integer, Unicode, DateTime, Float
 from sqlalchemy.ext.declarative import declarative_base
@@ -15,6 +14,7 @@ class MeasurementType(Base):
 
     def __init__(self, m_name):
         self.m_name = m_name
+
 
 class Measurement(Base):
     """This table contains all measurements that are going to be recorded."""
@@ -39,10 +39,11 @@ def upgrade(migrate_engine):
         __tablename__ = 'account_user'
         __table_args__ = {'autoload': True}
 
-    Measurement.user = relationship('User',
-                                    backref=backref('measurements',
-                                                    order_by=Measurement.m_date,
-                                                    lazy='dynamic'))
+    Measurement.user = relationship(
+        'User',
+        backref=backref('measurements',
+                        order_by=Measurement.m_date,
+                        lazy='dynamic'))
 
     Base.metadata.create_all()
 

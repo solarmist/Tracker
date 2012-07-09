@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 """ The main application for Dietzilla.py"""
-from datetime import date, timedelta, datetime, time
+from datetime import datetime
 from pytz import timezone
 from flask import Flask, render_template, abort
 from flask.ext.sqlalchemy import SQLAlchemy
 from jinja2 import TemplateNotFound
+
 
 def setup_app():
     app = Flask(__name__)
@@ -17,20 +18,24 @@ app, db = setup_app()
 # Needs db to be setup before importing
 from .lib.models import Measurement, MeasurementType, User
 
+
 @app.route('/', defaults={'page': 'index'})
 @app.route('/template/<name>')
 def show(name):
+    """Generic function to render each template """
     try:
         return render_template(name)
     except TemplateNotFound:
         abort(404)
 
-# Insert test data
+
 @app.route('/insert')
 def insert():
+    """Insert test data into the database """
     from test_data import insert_data
     insert_data()
     return index()
+
 
 @app.route('/')
 def index():
@@ -53,7 +58,6 @@ def index():
 
     data['graphs'] = [weight, waist]
     data['initial_days'] = -14
-    today = datetime.combine(date.today(), time())
     pacific = timezone('US/Pacific')
     now = datetime.now(pacific)
     for dates in data['graphs']:
@@ -62,10 +66,7 @@ def index():
         # Serialize the datetime objects
         for item in dates['data']:
             item[0] = item[0].strftime('%m/%d/%Y %H:%M:%S')
-    # data['num_days'] = today-date['min_date']
-    # print data['num_days']
-    # data['days'] = [d['min_date'] + timedelta(d)
-    #                 for d in range(0, data['num_days'])]
+
     return render_template('main.html', **data)
 
 

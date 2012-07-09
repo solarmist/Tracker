@@ -1,20 +1,28 @@
 <!doctype html>
-<head>
-  {% block head %}
-    <title>{% block title %}Dietzilla{% endblock %}| Dietzilla</title>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
-    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/flick/jquery-ui.css"/>
+<html lang="en">
+  <head>
+    {% block head %}
+      <title>{% block title %}Dietzilla{% endblock %}| Dietzilla</title>
+      <meta charset="utf-8">
+	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/flick/jquery-ui.css"/>
 
-    <script class="include" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-    <script class="include" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
-  {% endblock %}
-</head>
-<body>
-  {% block navbar %} {% endblock%}
-  {% block content %}
-    <h1>Dietzilla</h1>
-    <p>Dieting advise and tools for the lazy.</p>
-  {% endblock %}
-  {% block footer%}{% endblock %}
-</body>
+	<script class="include" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script class="include" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+      {% endblock %}
+  </head>
+  <body lang="en">
+    <div class="header">
+      {% block navbar %} {% endblock%}
+    </div>
+    <div class="main_content">
+      {% block content %}
+	<h1>Dietzilla</h1>
+	<p>Dieting advise and tools for the lazy.</p>
+      {% endblock %}
+    </div>
+    <div class="footer">
+      {% block footer%}{% endblock %}
+    </div>
+  </body>
+</html>

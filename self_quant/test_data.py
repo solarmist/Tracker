@@ -1,8 +1,9 @@
-from datetime import datetime, time, date
+from datetime import datetime
 from pytz import timezone
 from sqlalchemy.exc import IntegrityError
 from self_quant.lib.models import User, Measurement, MeasurementType
 from self_quant.tracker import db, app
+
 
 def insert_data():
 
@@ -13,8 +14,8 @@ def insert_data():
         db.session.commit()
 
     m_types = MeasurementType.query.all()
-    d_to_ts = lambda y,m,d: datetime(y,m,d, 0, 0,
-                                     tzinfo=timezone('US/Pacific'))
+    d_to_ts = lambda y, m, d: datetime(y, m, d, 0, 0,
+                                       tzinfo=timezone('US/Pacific'))
     weight = [m for m in m_types if m.m_name == 'Weight'].pop()
     waist = [m for m in m_types if m.m_name == 'Waist'].pop()
 
@@ -53,6 +54,7 @@ def insert_data():
                     Measurement(user, waist, d_to_ts(2012, 7, 5), 38.2),
                     Measurement(user, waist, d_to_ts(2012, 7, 6), 38.0),
                     Measurement(user, waist, d_to_ts(2012, 7, 7), 38.0),
+                    Measurement(user, waist, d_to_ts(2012, 7, 8), 37.8),
                     # Insert waist measurements
                     Measurement(user, weight, d_to_ts(2012, 6, 1), 194.8),
                     Measurement(user, weight, d_to_ts(2012, 6, 2), 193.7),
@@ -79,6 +81,10 @@ def insert_data():
                     Measurement(user, weight, d_to_ts(2012, 6, 23), 187.2),
                     Measurement(user, weight, d_to_ts(2012, 6, 24), 188.3),
                     Measurement(user, weight, d_to_ts(2012, 6, 25), 188.1),
+                    Measurement(user, weight,
+                                datetime(2012, 6, 26, 9, 05,
+                                         tzinfo=timezone('US/Pacific')),
+                                186.5),
                     Measurement(user, weight, d_to_ts(2012, 6, 26), 186.1),
                     Measurement(user, weight, d_to_ts(2012, 6, 27), 187.7),
                     Measurement(user, weight, d_to_ts(2012, 6, 28), 188.3),
@@ -90,7 +96,12 @@ def insert_data():
                     Measurement(user, weight, d_to_ts(2012, 7, 4), 185.7),
                     Measurement(user, weight, d_to_ts(2012, 7, 5), 187.8),
                     Measurement(user, weight, d_to_ts(2012, 7, 6), 186.6),
-                    Measurement(user, weight, d_to_ts(2012, 7, 7), 185.3)
+                    Measurement(user, weight, d_to_ts(2012, 7, 7), 185.3),
+                    Measurement(user, weight, d_to_ts(2012, 7, 8), 187.3),
+                    Measurement(user, weight,
+                                datetime(2012, 7, 7, 11, 10,
+                                         tzinfo=timezone('US/Pacific')),
+                                185.4)
                     ]
 
     for measurement in measurements:

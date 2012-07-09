@@ -1,0 +1,138 @@
+/* Triad Color Scheme
+http://colorschemedesigner.com/#3m31TkjI3vyxB
+Primary Color:
+#4BB2C5	#4F8A94	#197181	#7CD3E3	#99D8E3
+
+Secondary Color A:
+#FFCD5D	#C0A464	#A77D1F	#FFDA88	#FFE5AA
+
+Secondary Color B:
+#FF6D5D	#C06D64	#A72C1F	#FF9388	#FFB2AA
+
+Fonts:
+Headings: Georgia, serif;
+Text: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica
+Trim/accent: Courier
+*/
+
+body {
+    background: #7CD3E3;
+}
+
+.main_content {
+    display: block;
+    width: 1000px;
+    margin: auto;
+    margin-top: 0px;
+    background: #FFFFFF;
+    text-align: center;
+    font-size: 14px;
+    font-family: Georgia;
+}
+
+#dates{
+    height: 50px;
+    width: 800px;
+    border: 1px solid #555;
+    background : #4BB2C5;
+}
+
+.center{
+    margin-left: auto;
+    margin-right: auto;
+
+    display: -webkit-box;
+    -webkit-box-orient: horizontal;
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+
+    display: -moz-box;
+    -moz-box-orient: horizontal;
+    -moz-box-pack: center;
+    -moz-box-align: center;
+
+    display: box;
+    box-orient: horizontal;
+    box-pack: center;
+    box-align: center;
+}
+
+.graph {
+    margin: auto;
+    margin-top: 20px;
+    width:800px;
+
+}
+
+#target {
+    height: 320px;
+}
+
+#controller {
+    height: 150px;
+}
+
+input {
+    margin: 0px 6px;
+
+}
+
+div:last-child {
+    margin-bottom: 15px;
+}
+
+.triangle-left {
+	width: 0;
+	height: 0;
+	float: left;
+	margin: 5px;
+	border-right: 15px solid #A72C1F;
+	border-top: 7px solid transparent;
+	border-bottom: 7px solid transparent;
+}
+
+.triangle-right {
+	width: 0;
+	height: 0;
+	float: left;
+	margin: 5px;
+	border-left: 15px solid #A72C1F;
+	border-top: 7px solid transparent;
+	border-bottom: 7px solid transparent;
+}
+
+.triangle-down {
+	width: 0;
+	height: 0;
+	float: left;
+	margin: 5px;
+	border-top: 15px solid #A72C1F;
+	border-right: 7px solid transparent;
+	border-left: 7px solid transparent;
+}
+
+
+.line {
+    clear: both;
+    height: 30px;
+    width: 800px;
+    border: 1px solid #555;
+    background : #FFCD5D;
+}
+
+.subline {
+    clear: both;
+    height: 30px;
+    width: 780px;
+    border: 1px solid #555;
+    background : #C06D64;
+}
+
+/* #entries { */
+/*     margin-left: auto; */
+/*     margin-right: auto; */
+/* } */
+
+.odd {
+    background: #FFE5AA;
+}
