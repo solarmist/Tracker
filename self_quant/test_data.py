@@ -55,6 +55,9 @@ def insert_data():
                     Measurement(user, waist, d_to_ts(2012, 7, 6), 38.0),
                     Measurement(user, waist, d_to_ts(2012, 7, 7), 38.0),
                     Measurement(user, waist, d_to_ts(2012, 7, 8), 37.8),
+                    Measurement(user, waist, d_to_ts(2012, 7, 9), 38.1),
+                    Measurement(user, waist, d_to_ts(2012, 7, 10), 37.7),
+                    Measurement(user, waist, d_to_ts(2012, 7, 11), 37.8),
                     # Insert waist measurements
                     Measurement(user, weight, d_to_ts(2012, 6, 1), 194.8),
                     Measurement(user, weight, d_to_ts(2012, 6, 2), 193.7),
@@ -97,11 +100,14 @@ def insert_data():
                     Measurement(user, weight, d_to_ts(2012, 7, 5), 187.8),
                     Measurement(user, weight, d_to_ts(2012, 7, 6), 186.6),
                     Measurement(user, weight, d_to_ts(2012, 7, 7), 185.3),
-                    Measurement(user, weight, d_to_ts(2012, 7, 8), 187.3),
                     Measurement(user, weight,
                                 datetime(2012, 7, 7, 11, 10,
                                          tzinfo=timezone('US/Pacific')),
                                 185.4)
+                    Measurement(user, weight, d_to_ts(2012, 7, 8), 187.3),
+                    Measurement(user, weight, d_to_ts(2012, 7, 9), 186.6),
+                    Measurement(user, weight, d_to_ts(2012, 7, 10), 185.7),
+                    Measurement(user, weight, d_to_ts(2012, 7, 11), 186.1),
                     ]
 
     for measurement in measurements:
