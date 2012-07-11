@@ -1,0 +1,13 @@
+DEBUG = True
+MIGRATE_REPO = '/Users/jdolson/Documents/tracker/self_quant/sql'
+PORT = 5432
+HOSTNAME = 'localhost'
+USERNAME = 'dietzilla'
+PASSWORD = ''
+DBNAME = 'dietzilla'
+SQLALCHEMY_DATABASE_URI = ('postgresql://{user}:{pw}@{host}:{port}/{database}'.
+                           format(user=USERNAME,
+                                  pw=PASSWORD,
+                                  host=HOSTNAME,
+                                  port=PORT,
+                                  database=DBNAME))
