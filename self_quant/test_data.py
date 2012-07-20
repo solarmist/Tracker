@@ -19,7 +19,7 @@ def insert_data():
     weight = [m for m in m_types if m.m_name == 'Weight'].pop()
     waist = [m for m in m_types if m.m_name == 'Waist'].pop()
 
-    # Insert weight measurement
+    # Insert waist measurements
     measurements = [Measurement(user, waist, d_to_ts(2012, 6, 1), 39.3),
                     Measurement(user, waist, d_to_ts(2012, 6, 2), 39.2),
                     Measurement(user, waist, d_to_ts(2012, 6, 4), 38.9),
@@ -58,7 +58,16 @@ def insert_data():
                     Measurement(user, waist, d_to_ts(2012, 7, 9), 38.1),
                     Measurement(user, waist, d_to_ts(2012, 7, 10), 37.7),
                     Measurement(user, waist, d_to_ts(2012, 7, 11), 37.8),
-                    # Insert waist measurements
+
+                    Measurement(user, waist, d_to_ts(2012, 7, 12), 37.7),
+                    Measurement(user, waist, d_to_ts(2012, 7, 13), 37.9),
+                    Measurement(user, waist, d_to_ts(2012, 7, 14), 37.7),
+                    Measurement(user, waist, d_to_ts(2012, 7, 15), 37.8),
+                    Measurement(user, waist, d_to_ts(2012, 7, 16), 37.8),
+                    Measurement(user, waist, d_to_ts(2012, 7, 17), 37.8),
+                    Measurement(user, waist, d_to_ts(2012, 7, 18), 37.8),
+                    Measurement(user, waist, d_to_ts(2012, 7, 19), 37.8),
+                    # Insert weight measurements
                     Measurement(user, weight, d_to_ts(2012, 6, 1), 194.8),
                     Measurement(user, weight, d_to_ts(2012, 6, 2), 193.7),
                     Measurement(user, weight, d_to_ts(2012, 6, 3), 192.9),
@@ -109,6 +118,15 @@ def insert_data():
                     Measurement(user, weight, d_to_ts(2012, 7, 9), 186.6),
                     Measurement(user, weight, d_to_ts(2012, 7, 10), 185.7),
                     Measurement(user, weight, d_to_ts(2012, 7, 11), 186.1),
+                    Measurement(user, weight, d_to_ts(2012, 7, 12), 185.5),
+                    Measurement(user, weight, d_to_ts(2012, 7, 13), 185.7),
+                    Measurement(user, weight, d_to_ts(2012, 7, 14), 184.9),
+                    Measurement(user, weight, d_to_ts(2012, 7, 15), 185.8),
+                    Measurement(user, weight, d_to_ts(2012, 7, 16), 187.4),
+                    Measurement(user, weight, d_to_ts(2012, 7, 17), 184.7),
+                    Measurement(user, weight, d_to_ts(2012, 7, 18), 186.2),
+                    Measurement(user, weight, d_to_ts(2012, 7, 19), 188.2),
+                    Measurement(user, weight, d_to_ts(2012, 7, 20), 187.4),
                     ]
 
     for measurement in measurements:
