@@ -13,13 +13,6 @@ class User(Base):
     name = Column(Unicode)
     email = Column(Unicode, nullable=False)
 
-    def __init(self, user_name, email):
-        self.name = user_name
-        self.email = email
-
-    def __repr__(self):
-        return '<User {} {}>'.format(self.id, self.name)
-
 
 def upgrade(migrate_engine):
     # Upgrade operations go here. Don't create your own engine; bind

@@ -100,6 +100,7 @@ def insert_data():
                     Measurement(user, weight, d_to_ts(2012, 7, 5), 187.8),
                     Measurement(user, weight, d_to_ts(2012, 7, 6), 186.6),
                     Measurement(user, weight, d_to_ts(2012, 7, 7), 185.3),
+                    Measurement(user, weight, d_to_ts(2012, 7, 8), 187.3),
                     Measurement(user, weight,
                                 datetime(2012, 7, 7, 11, 10,
                                          tzinfo=timezone('US/Pacific')),
