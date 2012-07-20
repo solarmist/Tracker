@@ -63,13 +63,13 @@ $(document).ready(function(){
            $("#to").datepicker("getDate"),
           series);
 
-    $('#reset').click(function() {controllerPlot.resetZoom();
+    $('#reset')[0].click(function() {controllerPlot.resetZoom();
                                         });
-    $('#cust').click(function() {controllerPlot.resetZoom();
+    $('#cust')[0].click(function() {controllerPlot.resetZoom();
                                         jqplot_zoomDates(new Date(2012, 5 - 1, 3),
                                                          new Date(2012, 6 - 1, 26), targetPlot);
                                        });
-    $('#default').click(function() {controllerPlot.resetZoom();
+    $('#default')[0].click(function() {controllerPlot.resetZoom();
                                            jqplot_zoomDates($("#from").datepicker("getDate"),
                                                             $("#to").datepicker("getDate"), targetPlot);
                                           });
@@ -77,6 +77,8 @@ $(document).ready(function(){
 
 function makeRow(text, hash) {
     var wrapper = document.createElement('div'),
+        wrapper2 = false,
+        br = document.createElement('br'),
         hidden = document.createElement('input'),
         label = document.createElement('label'),
         labelDiv = document.createElement('div');
@@ -96,6 +98,7 @@ function makeRow(text, hash) {
 
     // Insert a hidden for date
     // Create an expandable area for multiple values on the same date
+    // Such as weight, BMI, and waist size
     for (var i = 0; i < hash['titles'].length; i++) {
 	var input = document.createElement('input'),
             inputDiv = document.createElement('div');
@@ -107,11 +110,13 @@ function makeRow(text, hash) {
             if (hash[text].length <= i) {
 		input.value = '';
             } else {
-		// If we have multiple values
+		// If we have multiple values for the same
 		if (hash[text][i].length > 1){
-                    var wrapper2 = document.createElement('div');
-                    wrapper2.className = 'row';
-                    wrapper2.id = text;
+                    if (wrapper2 == false) {
+			wrapper2 = document.createElement('div');
+			wrapper2.className = 'row';
+			wrapper2.id = text;
+                    }
 
                     //Make a nested object
                     // hash[graph][date][entries for the date][0 is date 1 is value]
@@ -120,8 +125,7 @@ function makeRow(text, hash) {
 
                     // Create the drop down for multiple values on one day
                     for (var j=0; j < hash[text][i].length; j++ ) {
-			var br = document.createElement('br'),
-                            label2 = document.createElement('label'),
+			var label2 = document.createElement('label'),
                             hidden2 = document.createElement('input'),
                             input2 = document.createElement('input'),
                             subtext = hash[text][i][j],
@@ -144,17 +148,14 @@ function makeRow(text, hash) {
 			input2Div.appendChild(input2);
 			wrapper2.appendChild(label2Div);
 			wrapper2.appendChild(input2Div);
-			wrapper.insertBefore(br, labelDiv);
-			wrapper.insertBefore(wrapper2, labelDiv);
-			$(br).hide();
-			$(wrapper2).hide();
                     }
                     wrapper.onclick = function(){
 			var sublines = $(wrapper).children();
-			console.log(sublines);
-			for (var j = 2; j < sublines.length; j++) {
-                            $(sublines[j]).slideToggle();
-			}
+			$(sublines[sublines.length-1]).slideToggle();
+			// console.log(sublines);
+			// for (var j = 3; j < sublines.length; j++) {
+                        //     $(sublines[j]).slideToggle();
+			// }
                     };
 		} else {
                     input.value = hash[text][i][0][1];
@@ -164,6 +165,12 @@ function makeRow(text, hash) {
 	inputDiv.appendChild(input);
 	wrapper.appendChild(inputDiv);
 
+    }
+    if (wrapper2 != false) {
+	// wrapper2.appendChild(br);
+	wrapper.appendChild(wrapper2)
+	// $(br).hide();
+	$(wrapper2).hide();
     }
 return wrapper;
 }

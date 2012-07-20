@@ -22,6 +22,19 @@ body {
     /* background: #7CD3E3; */
 }
 
+/* .graph { */
+/*     margin-top: 20px; */
+/*     width:800px; */
+/* } */
+
+#target {
+    height: 320px;
+}
+
+#controller {
+    height: 150px;
+}
+
 .odd {
     background: #FFE5AA;
 }
