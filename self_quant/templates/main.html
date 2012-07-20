@@ -63,38 +63,44 @@ $(document).ready(function(){
            $("#to").datepicker("getDate"),
           series);
 
-    $('.button-reset').click(function() {controllerPlot.resetZoom();
+    $('#reset').click(function() {controllerPlot.resetZoom();
                                         });
-    $('.button-cust').click(function() {controllerPlot.resetZoom();
+    $('#cust').click(function() {controllerPlot.resetZoom();
                                         jqplot_zoomDates(new Date(2012, 5 - 1, 3),
                                                          new Date(2012, 6 - 1, 26), targetPlot);
                                        });
-    $('.button-default').click(function() {controllerPlot.resetZoom();
+    $('#default').click(function() {controllerPlot.resetZoom();
                                            jqplot_zoomDates($("#from").datepicker("getDate"),
                                                             $("#to").datepicker("getDate"), targetPlot);
                                           });
 });
 
 function makeRow(text, hash) {
-    var div = document.createElement('div'),
-        wrapper = document.createElement('div'),
+    var wrapper = document.createElement('div'),
         hidden = document.createElement('input'),
-        label = document.createElement('label');
+        label = document.createElement('label'),
+        labelDiv = document.createElement('div');
 
-    wrapper.className = 'line center';
-    label.textContent = text + ': ';
+    wrapper.className = 'row';
+    wrapper.idName = 'line';
+    labelDiv.className = 'three mobile-two columns';
+    label.className = 'right inline';
+
+    label.textContent = text + ':';
     label.htmlFor = 'date';
     hidden.type = 'hidden';
 
-    div.appendChild(label);
-    div.appendChild(hidden);
-    wrapper.appendChild(div);
+    labelDiv.appendChild(label);
+    labelDiv.appendChild(hidden);
+    wrapper.appendChild(labelDiv);
 
     // Insert a hidden for date
     // Create an expandable area for multiple values on the same date
     for (var i = 0; i < hash['titles'].length; i++) {
-	var input = document.createElement('input');
-	input.size = 6;
+	var input = document.createElement('input'),
+            inputDiv = document.createElement('div');
+
+	inputDiv.className = 'three mobile-two columns';
 	input.type = 'text';
 	if (text in hash) {
             hidden.value = hash[text][i][0][0];
@@ -103,57 +109,51 @@ function makeRow(text, hash) {
             } else {
 		// If we have multiple values
 		if (hash[text][i].length > 1){
+                    var wrapper2 = document.createElement('div');
+                    wrapper2.className = 'row';
+                    wrapper2.id = text;
+
                     //Make a nested object
                     // hash[graph][date][entries for the date][0 is date 1 is value]
                     input.value = hash[text][i][0][1];
                     hidden.value = hash[text][i][0][0];
 
                     // Create the drop down for multiple values on one day
-                    var triangle = document.createElement('div');
-                    triangle.className = 'triangle-right';
-                    div.insertBefore(triangle, div.children[0]);
                     for (var j=0; j < hash[text][i].length; j++ ) {
-			var div2 = document.createElement('div'),
-                            wrapper2 = document.createElement('div'),
-                            br = document.createElement('br'),
+			var br = document.createElement('br'),
                             label2 = document.createElement('label'),
                             hidden2 = document.createElement('input'),
                             input2 = document.createElement('input'),
-                            subtext = hash[text][i][j];
+                            subtext = hash[text][i][j],
+                            input2Div = document.createElement('div'),
+                            label2Div = document.createElement('div');
 
-			wrapper2.className = 'subline center';
-			wrapper2.id = text;
+
 			input2.type = 'text';
 			input2.value = subtext[1];
 			label2.textContent = hash['titles'][i] + ' @ ' + subtext[0].toLocaleTimeString() + ': ';
+			label2.className = 'right inline';
+			label2Div.className = 'four columns';
+			input2Div.className = 'two columns';
+
 			label2.htmlFor = 'date';
 			hidden2.type = 'hidden';
 			hidden2.value = subtext[0];
-			div2.appendChild(label2);
-			div2.appendChild(hidden2);
-			div2.appendChild(input2);
-			wrapper2.appendChild(div2);
-			wrapper.appendChild(br);
-			wrapper.appendChild(wrapper2);
+			label2Div.appendChild(label2)
+			label2Div.appendChild(hidden2);
+			input2Div.appendChild(input2);
+			wrapper2.appendChild(label2Div);
+			wrapper2.appendChild(input2Div);
+			wrapper.insertBefore(br, labelDiv);
+			wrapper.insertBefore(wrapper2, labelDiv);
 			$(br).hide();
 			$(wrapper2).hide();
                     }
-                    triangle.onclick = function(){
+                    wrapper.onclick = function(){
 			var sublines = $(wrapper).children();
 			console.log(sublines);
 			for (var j = 2; j < sublines.length; j++) {
                             $(sublines[j]).slideToggle();
-			}
-			right = $(wrapper).find('.triangle-right');
-			down = $(wrapper).find('.triangle-down');
-			if (right.length > 0) {
-                            for (var j = 0; j <= right.length; j++) {
-				right[0].className = 'triangle-down';
-                            }
-			} else {
-                            for (var j = 0; j <= down.length; j++) {
-				down[0].className = 'triangle-right';
-                            }
 			}
                     };
 		} else {
@@ -161,7 +161,9 @@ function makeRow(text, hash) {
 		}
             }
 	}
-	div.appendChild(input);
+	inputDiv.appendChild(input);
+	wrapper.appendChild(inputDiv);
+
     }
 return wrapper;
 }
@@ -205,42 +207,69 @@ function inputs(start, end, series){
     container.empty();
     var hash = series_to_hash(series);
 
-    var div = document.createElement('div');
+    var wrapper = document.createElement('div'),
+        dateDiv = document.createElement('div'),
+        dateLabel = document.createElement('label');
+
+    wrapper.className = 'row';
+    dateDiv.className = 'three mobile-two columns';
+    dateLabel.className = 'inline right';
+    dateLabel.textContent = 'Date';
+    dateDiv.appendChild(dateLabel);
+    wrapper.appendChild(dateDiv);
+
     for (var i = 0; i < hash['titles'].length; i++){
-	var p = document.createElement('p');
-	p.textContent = hash['titles'][i];
-	div.appendChild(p);
-	div.className = "line center";
+	var label = document.createElement('label'),
+            labelDiv = document.createElement('div');
+	labelDiv.className = 'two columns';
+        label.className='inline right';
+	label.textContent = hash['titles'][i];
+	labelDiv.appendChild(label);
+	wrapper.appendChild(labelDiv);
     }
-    $(div).appendTo(container);
+    $(wrapper).appendTo(container);
 
     for (var i = start; i <= end; i.setDate(i.getDate() + 1)) {
 	//Next row
 	$(makeRow(i.toDateString(), hash)).appendTo(container);
     }
-    $('.line:odd').addClass('odd');
+    $('#line:odd').addClass('odd');
 };
 
   </script>
 {% endblock %}
 {% block content %}
-  <br/>
-  <div class="jqPlot graph" id="target"></div>
-  <div class="jqPlot graph" id="controller"></div>
-  <br/>
-  <div id="zoomOptions">
-    <button class="button-default">Show last {{ -initial_days }} days</button>
-    <button class="button-cust">Show last ? days</button>
-    <button class="button-reset">Show all dates</button>
-  </div>
-  <br/>
-  <div class="center" id="dates">
-    <div>
-      <label for="from">Start Date: </label><input id="from" type="text"/>
-      <label for="to"> to </label><input id="to" type="text"/>
+  <fieldset>
+    <legend>Graphs</legend>
+    <div class="jqPlot graph centered" id="target"></div>
+    <div class="jqPlot graph centered" id="controller"></div>
+  </fieldset>
+  <div id="zoomOptions" class="row">
+    <div class="eight mobile-six columns centered">
+      <ul class="button-group radius three-up">
+	<li><a href="#" class="button" id="default">Show last {{ -initial_days }} days</a></li>
+	<li><a href="#" class="button" id="cust">Show last ? days</a></li>
+	<li><a href="#" class="button" id="reset">Show all dates</a></li>
+      </ul>
     </div>
   </div>
   <br/>
-  <div id="entries">
+  <div class="row" id="dates">
+    <div class="twelve mobile-eight columns centered">
+      <div class="two mobile-one columns">
+	<label class="right inline">From:</label>
+      </div>
+      <div class="four mobile-three columns">
+	<input id="from" type="text" placeholder="Two weeks ago"/>
+      </div>
+      <div class="two mobile-one columns">
+	<label class="right inline">To:</label>
+      </div>
+      <div class="four mobile-three columns">
+	<input id="to" type="text" class="inline right" placeholder="Today"/>
+      </div>
+    </div>
+  </div>
+  <div id="entries" class="row">
   </div>
 {% endblock %}
