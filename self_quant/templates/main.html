@@ -100,12 +100,17 @@ function makeRow(text, hash) {
     // Create an expandable area for multiple values on the same date
     // Such as weight, BMI, and waist size
     for (var i = 0; i < hash['titles'].length; i++) {
+	if (typeof hash[text][i] === 'undefined') {
+            hash[text][i] = [''];
+	}
 	var input = document.createElement('input'),
             inputDiv = document.createElement('div');
 
 	inputDiv.className = 'three mobile-two columns';
 	input.type = 'text';
 	if (text in hash) {
+            console.log(hash[text][i]);
+            console.log(hash[text][i][0]);
             hidden.value = hash[text][i][0][0];
             if (hash[text].length <= i) {
 		input.value = '';

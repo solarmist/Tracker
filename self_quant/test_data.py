@@ -135,4 +135,4 @@ def insert_data():
             db.session.commit()
         except IntegrityError:
             db.session.rollback()
-            app.logger.error('Rolling back waist data: {}', measurement)
+            app.logger.error('Rolling back waist data: %s', measurement)
